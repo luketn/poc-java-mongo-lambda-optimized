@@ -41,3 +41,5 @@ Switch to using JSON serializer built into MongoDB to seralize the response (no 
 ![img_12.png](img_12.png)    
 ![img_13.png](img_13.png)  
 
+Try using the HTTP data API (no Mongo driver at all!):  
+![img_14.png](img_14.png)
