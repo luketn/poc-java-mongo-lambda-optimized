@@ -31,7 +31,7 @@
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
-      <artifactId>mongodb-driver-core</artifactId>
+      <artifactId>mongodb-driver-sync</artifactId>
       <version>4.5.1</version>
     </dependency>
   </dependencies>
