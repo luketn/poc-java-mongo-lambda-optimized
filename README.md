@@ -17,3 +17,10 @@ Remove the environment variable:
 Add the environment variable back:
 ![img_4.png](img_4.png)
 
+Add a Mongo query:
+![img_5.png](img_5.png)
+
+Mongo query without the environment variable - timed out after 6 seconds!!:
+![img_6.png](img_6.png)
+Changed the timeout to 15s:
+![img_7.png](img_7.png)
