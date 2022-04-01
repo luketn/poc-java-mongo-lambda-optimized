@@ -10,3 +10,10 @@ JAVA_TOOL_OPTIONS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1"
 
 Add the Mongo driver and print the version in the response:
 ![img_2.png](img_2.png)
+
+Remove the environment variable:
+![img_3.png](img_3.png)
+
+Add the environment variable back:
+![img_4.png](img_4.png)
+
