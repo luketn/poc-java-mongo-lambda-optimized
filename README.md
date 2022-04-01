@@ -8,19 +8,26 @@ After adding the environment variable:
 JAVA_TOOL_OPTIONS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1"  
 ![img_1.png](img_1.png)
 
-Add the Mongo driver and print the version in the response:
+Add the Mongo driver and print the version in the response:  
 ![img_2.png](img_2.png)
 
-Remove the environment variable:
+Remove the environment variable:  
 ![img_3.png](img_3.png)
 
-Add the environment variable back:
+Add the environment variable back:  
 ![img_4.png](img_4.png)
 
-Add a Mongo query:
+Add a Mongo query:  
 ![img_5.png](img_5.png)
 
-Mongo query without the environment variable - timed out after 6 seconds!!:
-![img_6.png](img_6.png)
-Changed the timeout to 15s:
+Mongo query without the environment variable - timed out after 6 seconds!!:  
+![img_6.png](img_6.png)  
+Changed the timeout to 15s:  
 ![img_7.png](img_7.png)
+
+Add the environment variable and increase the RAM to 10240MB (10GB!):  
+![img_8.png](img_8.png)
+
+After running YourKit, see that Apache Log4J was adding 2MB to the bundle and 600 classes the classloader was taking 300ms to load them:  
+![img_9.png](img_9.png)
+
