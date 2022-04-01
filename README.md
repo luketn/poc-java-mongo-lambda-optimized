@@ -41,5 +41,8 @@ Switch to using JSON serializer built into MongoDB to seralize the response (no 
 ![img_12.png](img_12.png)    
 ![img_13.png](img_13.png)  
 
-Try using the HTTP data API (no Mongo driver at all!):  
+Try using the HTTP data API (no Mongo driver at all! Terrible performance):  
 ![img_14.png](img_14.png)
+
+Revert to the MongoDB approach. Pretty awesome cold-start at 1.5s.:  
+![img_15.png](img_15.png)
