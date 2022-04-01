@@ -28,7 +28,7 @@ Changed the timeout to 15s:
 Add the environment variable and increase the RAM to 10240MB (10GB!):  
 ![img_8.png](img_8.png)
 
-After running YourKit, see that Apache Log4J was adding 2MB to the bundle and 600 classes the classloader was taking 300ms to load them:  
+After running YourKit, see that Apache Log4J was adding 2MB to the bundle and 600 classes the classloader was taking 300ms to load them - remove Log4J!:  
 ![img_9.png](img_9.png)
 
 After removing Jackson and switching from our own implementations of the Event classes to the AWS library:    
@@ -36,4 +36,8 @@ After removing Jackson and switching from our own implementations of the Event c
 
 After increasing the memory to 4096 (1.4s):  
 ![img_11.png](img_11.png)
+
+Switch to using JSON serializer built into MongoDB to seralize the response (no change in performance - 1.4s):  
+![img_12.png](img_12.png)    
+![img_13.png](img_13.png)  
 
