@@ -1,0 +1,19 @@
+service: poc-java-mongo-lambda-optimized
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: java11
+  stage: dev
+  region: ap-southeast-2
+
+package:
+  artifact: target/mongo-lambda-dev.jar
+
+functions:
+  hello:
+    handler: com.mycodefu.Handler
+    events:
+      - httpApi:
+          path: '*'
+          method: '*'
