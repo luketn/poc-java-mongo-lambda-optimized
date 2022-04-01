@@ -1,6 +1,9 @@
 package com.mycodefu;
 
-import com.amazonaws.services.lambda.runtime.*;
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.ServerApi;
@@ -12,11 +15,11 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.internal.build.MongoDriverVersion;
 import org.bson.Document;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
+// Handler value: example.Handler
+public class Handler implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2HTTPResponse> {
 	private static String CONNECTION_STRING;
 	private static ConnectionString connectionString;
 	private static MongoClientSettings settings;
@@ -38,9 +41,10 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 		System.out.println(String.format("Took %d milliseconds to initialize MongoDB outside handler.", timeTakenMillis));
 	}
 
+
 	@Override
-	public ApiGatewayResponse handleRequest(Map<String, Object> input, Context context) {
-		System.out.printf("received: %s%n", input);
+	public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent apiGatewayV2HTTPEvent, Context context) {
+		System.out.printf("received: %s%n", apiGatewayV2HTTPEvent);
 
 		long start = System.nanoTime();
 		MongoDatabase database = mongoClient.getDatabase("ctest");
@@ -51,70 +55,22 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 		long timeTakenMillis = (end - start) / 1_000_000;
 		System.out.println(String.format("Took %d milliseconds to run MongoDB query inside handler.", timeTakenMillis));
 
-		Response responseBody = new Response(String.format("Go Serverless v1.x! Your function executed successfully! Mongo driver version %s. Thing: %s", MongoDriverVersion.VERSION, thing), input);
-		return ApiGatewayResponse.builder()
-				.setStatusCode(200)
-				.setObjectBody(responseBody)
-				.setHeaders(Collections.singletonMap("X-Powered-By", "AWS Lambda & serverless"))
-				.build();
+		Map<String, String> headers = new HashMap<>();
+		headers.put("X-Powered-By", "AWS Lambda & serverless");
+		headers.put("Content-Type", "text/plain");
+		APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse(
+				200,
+				headers,
+				null,
+				null,
+				String.format("Go Serverless v1.x! Your function executed successfully! Mongo driver version %s. Thing: %s", MongoDriverVersion.VERSION, thing),
+				false
+		);
+		return response;
 	}
 
 	public static void main(String[] args) {
-		new Handler().handleRequest(new HashMap<>(), new Context() {
-			@Override
-			public String getAwsRequestId() {
-				return "null";
-			}
-
-			@Override
-			public String getLogGroupName() {
-				return "null";
-			}
-
-			@Override
-			public String getLogStreamName() {
-				return null;
-			}
-
-			@Override
-			public String getFunctionName() {
-				return null;
-			}
-
-			@Override
-			public String getFunctionVersion() {
-				return null;
-			}
-
-			@Override
-			public String getInvokedFunctionArn() {
-				return null;
-			}
-
-			@Override
-			public CognitoIdentity getIdentity() {
-				return null;
-			}
-
-			@Override
-			public ClientContext getClientContext() {
-				return null;
-			}
-
-			@Override
-			public int getRemainingTimeInMillis() {
-				return 0;
-			}
-
-			@Override
-			public int getMemoryLimitInMB() {
-				return 0;
-			}
-
-			@Override
-			public LambdaLogger getLogger() {
-				return null;
-			}
-		});
+		APIGatewayV2HTTPResponse response = new Handler().handleRequest(new APIGatewayV2HTTPEvent(null, null, null, null, null, null, null, null, null, null, false, null), null);
+		System.out.println(response);
 	}
 }

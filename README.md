@@ -31,3 +31,9 @@ Add the environment variable and increase the RAM to 10240MB (10GB!):
 After running YourKit, see that Apache Log4J was adding 2MB to the bundle and 600 classes the classloader was taking 300ms to load them:  
 ![img_9.png](img_9.png)
 
+After removing Jackson and switching from our own implementations of the Event classes to the AWS library:    
+![img_10.png](img_10.png)
+
+After increasing the memory to 4096 (1.4s):  
+![img_11.png](img_11.png)
+
