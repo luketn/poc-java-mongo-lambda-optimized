@@ -48,3 +48,8 @@ Try using the HTTP data API (no Mongo driver at all! Terrible performance):
 
 Revert to the MongoDB approach. Pretty awesome cold-start at 1.5s.:  
 ![img_15.png](img_15.png)
+
+Use the Netty stream factory (significantly slower - a few 100s of ms):  
+![img_16.png](img_16.png)  
+(note the Epoll native driver was not compatible with th Mongo driver and threw exceptions)  
+
