@@ -12,10 +12,6 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.connection.StreamFactoryFactory;
-import com.mongodb.connection.netty.NettyStreamFactory;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
 import org.bson.Document;
 import org.bson.json.JsonWriterSettings;
 
@@ -28,16 +24,13 @@ public class Handler implements RequestHandler<APIGatewayV2HTTPEvent, APIGateway
 	private static MongoClientSettings settings;
 	private static MongoClient mongoClient;
 	private static JsonWriterSettings jsonWriterSettings;
-	private static final String operatingSystem =  System.getProperty("os.name");
-	private static final boolean isLinux = operatingSystem.startsWith("Linux") || operatingSystem.startsWith("LINUX");
+
 
 	static {
 		long start = System.nanoTime();
-		//CONNECTION_STRING=mongodb://?:?@luke-shard-00-00.wr1mf.mongodb.net:27017,luke-shard-00-01.wr1mf.mongodb.net:27017,luke-shard-00-02.wr1mf.mongodb.net:27017/ctest?ssl\=true&replicaSet\=atlas-dscbdj-shard-0&authSource\=admin&retryWrites\=true&w\=majority&maxPoolSize\=1&readPreference\=nearest
 		CONNECTION_STRING = System.getenv("CONNECTION_STRING");
 		connectionString = new ConnectionString(CONNECTION_STRING);
 		settings = MongoClientSettings.builder()
-				.streamFactoryFactory(getStreamFactoryFactory())
 				.applyConnectionString(connectionString)
 				.serverApi(ServerApi.builder()
 						.version(ServerApiVersion.V1)
@@ -52,18 +45,6 @@ public class Handler implements RequestHandler<APIGatewayV2HTTPEvent, APIGateway
 		System.out.println(String.format("Took %d milliseconds to initialize MongoDB outside handler.", timeTakenMillis));
 	}
 
-	private static StreamFactoryFactory getStreamFactoryFactory() {
-		return (socketSettings, sslSettings) -> {
-			EventLoopGroup eventLoopGroup;
-//			if (isLinux) {
-//				System.out.println("Loading epoll event loop group for Netty");
-//				eventLoopGroup = new EpollEventLoopGroup();
-//			} else {
-				eventLoopGroup = new NioEventLoopGroup();
-//			}
-			return new NettyStreamFactory(socketSettings, sslSettings, eventLoopGroup);
-		};
-	}
 
 	@Override
 	public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent apiGatewayV2HTTPEvent, Context context) {
@@ -93,13 +74,8 @@ public class Handler implements RequestHandler<APIGatewayV2HTTPEvent, APIGateway
 		return response;
 	}
 
-	public static void main(String[] args) throws InterruptedException {
-		Handler handler = new Handler();
-//		for(int i=0; i<10; i++) {
-			APIGatewayV2HTTPResponse response = handler.handleRequest(new APIGatewayV2HTTPEvent(null, null, null, null, null, null, null, null, null, null, false, null), null);
-			System.out.println(response);
-			Thread.sleep(1000);
-//		}
-		System.exit(0);
+	public static void main(String[] args) {
+		APIGatewayV2HTTPResponse response = new Handler().handleRequest(new APIGatewayV2HTTPEvent(null, null, null, null, null, null, null, null, null, null, false, null), null);
+		System.out.println(response);
 	}
 }
