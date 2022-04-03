@@ -61,3 +61,9 @@ Try ARM:
 ![img_18.png](img_18.png)  
 
 REPORT RequestId: 4238ba93-256b-495f-84ad-512c7d2e0a27	Duration: 553.30 ms	Billed Duration: 554 ms	Memory Size: 4096 MB	Max Memory Used: 138 MB	Init Duration: 590.17 ms
+
+Try the async driver ():  
+![img_20.png](img_20.png)  
+
+REPORT RequestId: 3c2b1027-5197-4b6e-b6de-9429742139ff	Duration: 628.82 ms	Billed Duration: 629 ms	Memory Size: 4096 MB	Max Memory Used: 145 MB	Init Duration: 626.78 ms  
+
