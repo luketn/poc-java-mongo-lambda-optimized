@@ -1,7 +1,23 @@
 # poc-java-mongo-lambda-optimized
 Look at a few recent optimizations for Java lambda to see if they reduce cold-start for lambda to an acceptable latency for APIs.
 
-Ref: https://aws.amazon.com/blogs/compute/optimizing-aws-lambda-function-performance-for-java/  
+### Lessons
+Lessons to take to bring a Java MongoDB AWS Lambda cold start down to ~1s:  
+- Always remove Log4J - it's a massive amount of classes to load (600+)
+  - SL4J simple binding and 4096MB RAM
+  - Saves ~300ms to make this switch
+- If you're using MongoDB driver, you can use the driver's internal JSON serializer to save importing Jackson or similar
+- Always use this environment variable:
+  - JAVA_TOOL_OPTIONS	-XX:+TieredCompilation -XX:TieredStopAtLevel=1 
+  - Ref: https://aws.amazon.com/blogs/compute/optimizing-aws-lambda-function-performance-for-java/
+  - In this example, a mongo find query had an 8s cold start without it, and 4s with (before further optimizations).
+- Java likes memory. Try 4096MB for a MongoDB connection lambda.
+- Don't bother with the Netty streamfactory, it adds too much overhead and is slower
+  - The epoll native option doesn't currently (April 22) work with Mongo driver.
+- Use ARM architecture if cost is an issue (it is roughly the same for performance, and cheaper). adds 100ms or so.
+
+### Measurements 
+##### (round trip from a consistent Internet client in Sydney to AWS Sydney having around 50-60ms latency)  
 
 Initial version (basic deps - Jackson, Log4J, AWS handler interface):  
 ![img.png](img.png)
@@ -76,3 +92,11 @@ Took 293 milliseconds to initialize MongoDB outside handler.
 Took 515 milliseconds to run MongoDB query inside handler.
 
 REPORT RequestId: 8e3eee7b-7f30-44dc-adb3-791d8ca53cad	Duration: 531.81 ms	Billed Duration: 532 ms	Memory Size: 4096 MB	Max Memory Used: 138 MB	Init Duration: 608.11 ms
+
+Return to x86:  
+![img_22.png](img_22.png)  
+
+Took 271 milliseconds to initialize MongoDB outside handler.  
+Took 442 milliseconds to run MongoDB query inside handler.  
+
+REPORT RequestId: f79ef08c-a653-4740-b537-613389d13d3f	Duration: 456.03 ms	Billed Duration: 457 ms	Memory Size: 4096 MB	Max Memory Used: 142 MB	Init Duration: 592.24 ms

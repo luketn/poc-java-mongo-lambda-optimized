@@ -7,7 +7,7 @@ provider:
   runtime: java11
   stage: dev
   region: ap-southeast-2
-  architecture: arm64
+  architecture: x86_64
 
 package:
   artifact: target/mongo-lambda-dev.jar
