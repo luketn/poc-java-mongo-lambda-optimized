@@ -53,3 +53,11 @@ Use the Netty stream factory (significantly slower - a few 100s of ms):
 ![img_16.png](img_16.png)  
 (note the Epoll native driver was not compatible with th Mongo driver and threw exceptions)  
 
+Revert back to straight Mongo sync driver with SL4J simple binding and 4096MB RAM:  
+![img_17.png](img_17.png)  
+REPORT RequestId: 424b841c-6a1b-4cc9-be9c-93cac077b846	Duration: 463.70 ms	Billed Duration: 464 ms	Memory Size: 4096 MB	Max Memory Used: 142 MB	Init Duration: 576.73 ms
+
+Try ARM:  
+![img_18.png](img_18.png)  
+
+REPORT RequestId: 4238ba93-256b-495f-84ad-512c7d2e0a27	Duration: 553.30 ms	Billed Duration: 554 ms	Memory Size: 4096 MB	Max Memory Used: 138 MB	Init Duration: 590.17 ms
