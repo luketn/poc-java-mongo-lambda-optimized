@@ -8,17 +8,13 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.ServerApi;
 import com.mongodb.ServerApiVersion;
-import com.mongodb.reactivestreams.client.MongoClient;
-import com.mongodb.reactivestreams.client.MongoClients;
-import com.mongodb.reactivestreams.client.MongoCollection;
-import com.mongodb.reactivestreams.client.MongoDatabase;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.bson.json.JsonWriterSettings;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
-import reactor.core.publisher.MonoProcessor;
 
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,9 +53,7 @@ public class Handler implements RequestHandler<APIGatewayV2HTTPEvent, APIGateway
 		long start = System.nanoTime();
 		MongoDatabase database = mongoClient.getDatabase("ctest");
 		MongoCollection<Document> things = database.getCollection("things");
-		var documentMonoProcessor = MonoProcessor.create();
-		things.find().first().subscribe(documentMonoProcessor);
-		Document firstThing = (Document) documentMonoProcessor.block();
+		Document firstThing = things.find().first();
 		long end = System.nanoTime();
 		long timeTakenMillis = (end - start) / 1_000_000;
 		System.out.println(String.format("Took %d milliseconds to run MongoDB query inside handler.", timeTakenMillis));
@@ -81,11 +75,7 @@ public class Handler implements RequestHandler<APIGatewayV2HTTPEvent, APIGateway
 	}
 
 	public static void main(String[] args) {
-		Handler handler = new Handler();
-//		for (int i = 0; i < 10; i++) {
-			APIGatewayV2HTTPResponse response = handler.handleRequest(new APIGatewayV2HTTPEvent(null, null, null, null, null, null, null, null, null, null, false, null), null);
-			System.out.println(response);
-//		}
-		System.exit(0);
+		APIGatewayV2HTTPResponse response = new Handler().handleRequest(new APIGatewayV2HTTPEvent(null, null, null, null, null, null, null, null, null, null, false, null), null);
+		System.out.println(response);
 	}
 }

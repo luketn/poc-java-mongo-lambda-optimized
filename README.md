@@ -67,3 +67,12 @@ Try the async driver ():
 
 REPORT RequestId: 3c2b1027-5197-4b6e-b6de-9429742139ff	Duration: 628.82 ms	Billed Duration: 629 ms	Memory Size: 4096 MB	Max Memory Used: 145 MB	Init Duration: 626.78 ms  
 
+Back to the classic combo - great performance compared with earlier cold-starts!:  
+![img_21.png](img_21.png)  
+
+
+Took 293 milliseconds to initialize MongoDB outside handler.
+
+Took 515 milliseconds to run MongoDB query inside handler.
+
+REPORT RequestId: 8e3eee7b-7f30-44dc-adb3-791d8ca53cad	Duration: 531.81 ms	Billed Duration: 532 ms	Memory Size: 4096 MB	Max Memory Used: 138 MB	Init Duration: 608.11 ms

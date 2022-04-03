@@ -31,13 +31,8 @@
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
-      <artifactId>mongodb-driver-reactivestreams</artifactId>
-      <version>4.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>io.projectreactor</groupId>
-      <artifactId>reactor-core</artifactId>
-      <version>3.2.22.RELEASE</version>
+      <artifactId>mongodb-driver-sync</artifactId>
+      <version>4.5.1</version>
     </dependency>
   </dependencies>
 
