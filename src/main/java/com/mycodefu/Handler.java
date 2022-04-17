@@ -14,11 +14,15 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.bson.json.JsonWriterSettings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Handler implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2HTTPResponse> {
+	private static Logger log = LoggerFactory.getLogger("Handler");
+
 	private static String CONNECTION_STRING;
 	private static ConnectionString connectionString;
 	private static MongoClientSettings settings;
@@ -42,13 +46,14 @@ public class Handler implements RequestHandler<APIGatewayV2HTTPEvent, APIGateway
 				.build();
 		long end = System.nanoTime();
 		long timeTakenMillis = (end - start) / 1_000_000;
-		System.out.println(String.format("Took %d milliseconds to initialize MongoDB outside handler.", timeTakenMillis));
+		log.info(String.format("Took %d milliseconds to initialize MongoDB outside handler.", timeTakenMillis));
 	}
-
 
 	@Override
 	public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent apiGatewayV2HTTPEvent, Context context) {
-//		System.out.printf("received: %s%n", apiGatewayV2HTTPEvent);
+		if (log.isTraceEnabled()) {
+			log.trace(String.format("received: %s%n", apiGatewayV2HTTPEvent));
+		}
 
 		long start = System.nanoTime();
 		MongoDatabase database = mongoClient.getDatabase("ctest");
@@ -56,7 +61,7 @@ public class Handler implements RequestHandler<APIGatewayV2HTTPEvent, APIGateway
 		Document firstThing = things.find().first();
 		long end = System.nanoTime();
 		long timeTakenMillis = (end - start) / 1_000_000;
-		System.out.println(String.format("Took %d milliseconds to run MongoDB query inside handler.", timeTakenMillis));
+		log.info(String.format("Took %d milliseconds to run MongoDB query inside handler.", timeTakenMillis));
 
 		String responseBody = firstThing == null ? "{}" : firstThing.toJson(jsonWriterSettings);
 
@@ -76,6 +81,6 @@ public class Handler implements RequestHandler<APIGatewayV2HTTPEvent, APIGateway
 
 	public static void main(String[] args) {
 		APIGatewayV2HTTPResponse response = new Handler().handleRequest(new APIGatewayV2HTTPEvent(null, null, null, null, null, null, null, null, null, null, false, null), null);
-		System.out.println(response);
+		log.info(response.toString());
 	}
 }
