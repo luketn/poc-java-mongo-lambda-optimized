@@ -24,6 +24,8 @@ public class Handler implements RequestHandler<APIGatewayV2HTTPEvent, APIGateway
 	private static Logger log = LoggerFactory.getLogger("Handler");
 
 	private static String CONNECTION_STRING;
+	private static String DATABASE_NAME;
+	private static String COLLECTION_NAME;
 	private static ConnectionString connectionString;
 	private static MongoClientSettings settings;
 	private static MongoClient mongoClient;
@@ -33,6 +35,8 @@ public class Handler implements RequestHandler<APIGatewayV2HTTPEvent, APIGateway
 	static {
 		long start = System.nanoTime();
 		CONNECTION_STRING = System.getenv("CONNECTION_STRING");
+		DATABASE_NAME = System.getenv("DATABASE_NAME");
+		COLLECTION_NAME = System.getenv("COLLECTION_NAME");
 		connectionString = new ConnectionString(CONNECTION_STRING);
 		settings = MongoClientSettings.builder()
 				.applyConnectionString(connectionString)
@@ -56,8 +60,8 @@ public class Handler implements RequestHandler<APIGatewayV2HTTPEvent, APIGateway
 		}
 
 		long start = System.nanoTime();
-		MongoDatabase database = mongoClient.getDatabase("ctest");
-		MongoCollection<Document> things = database.getCollection("things");
+		MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
+		MongoCollection<Document> things = database.getCollection(COLLECTION_NAME);
 		Document firstThing = things.find().first();
 		long end = System.nanoTime();
 		long timeTakenMillis = (end - start) / 1_000_000;

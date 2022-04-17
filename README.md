@@ -16,8 +16,36 @@ Lessons to take to bring a Java MongoDB AWS Lambda cold start down to ~1s:
   - The epoll native option doesn't currently (April 22) work with Mongo driver.
 - Use ARM architecture if cost is an issue (it is roughly the same for performance, and cheaper). adds 100ms or so.
 
-### Measurements 
-##### (round trip from a consistent Internet client in Sydney to AWS Sydney having around 50-60ms latency)  
+## Measurements 
+
+### Internal Results using Private Endpoint in German region, comparing with and without tiered compilation
+
+`sls invoke -f tiered-compilation`  
+`serverless logs -f tiered-compilation`  
+
+Result:
+```shell
+Picked up JAVA_TOOL_OPTIONS: -XX:+TieredCompilation -XX:TieredStopAtLevel=1
+2022-04-17 11:56:57:898 +0000 [main] INFO Handler - Took 211 milliseconds to initialize MongoDB outside handler.
+START
+2022-04-17 11:56:58:531 +0000 [main] INFO Handler - Took 526 milliseconds to run MongoDB query inside handler.
+END Duration: 538.60 ms	Billed Duration: 539 ms	Memory Size: 4096 MB	Max Memory Used: 144 MB	Init Duration: 494.25 ms
+```
+
+vs
+
+`sls invoke -f regular`  
+`serverless logs -f regular`  
+
+result:
+```shell
+2022-04-17 11:57:55:389 +0000 [main] INFO Handler - Took 336 milliseconds to initialize MongoDB outside handler.
+START
+2022-04-17 11:57:57:153 +0000 [main] INFO Handler - Took 1617 milliseconds to run MongoDB query inside handler.
+END Duration: 1633.89 ms	Billed Duration: 1634 ms	Memory Size: 4096 MB	Max Memory Used: 162 MB	Init Duration: 758.64 ms
+```
+
+### Results from round trip from a consistent Internet client in Sydney to AWS Sydney having around 50-60ms latency  
 
 Initial version (basic deps - Jackson, Log4J, AWS handler interface):  
 ![img.png](img.png)

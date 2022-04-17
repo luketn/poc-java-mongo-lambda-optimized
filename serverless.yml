@@ -1,21 +1,41 @@
 # https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml
-service: poc-java-mongo-lambda-optimized
+service: poc-java-mongo
 frameworkVersion: '3'
 
 provider:
   name: aws
   runtime: java11
   stage: dev
-  region: ap-southeast-2
+  memorySize: 4096
+#  region: ap-southeast-2
+  region: eu-central-1
   architecture: x86_64
+  vpc:
+    securityGroupIds:
+      - sg-0016eedb5fb56ffd0
+    subnetIds:
+      - subnet-0beae6ccc622de1ae
+      - subnet-0e09bf6f1b4eb76ae
+  environment:
+    CONNECTION_STRING: ${file(./secrets.yml):CONNECTION_STRING}
+    DATABASE_NAME: ${file(./secrets.yml):DATABASE_NAME}
+    COLLECTION_NAME: ${file(./secrets.yml):COLLECTION_NAME}
+    KICK: ${file(./secrets.yml):KICK}
 
 package:
   artifact: target/mongo-lambda-dev.jar
 
 functions:
-  hello:
+  tiered-compilation:
     handler: com.mycodefu.Handler
-    events:
-      - httpApi:
-          path: '*'
-          method: '*'
+    description: A Java function with the tiered compilation flags set to improve startup time.
+    environment:
+      JAVA_TOOL_OPTIONS: "-XX:+TieredCompilation -XX:TieredStopAtLevel=1"
+  regular:
+    handler: com.mycodefu.Handler
+    description: A Java function without the tiered compilation flags.
+
+#    events:
+#      - httpApi:
+#          path: '*'
+#          method: '*'
